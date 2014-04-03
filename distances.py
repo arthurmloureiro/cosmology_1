@@ -7,8 +7,8 @@ import numpy as np
 import pylab as pl
 import scipy.integrate as inte
 
-h=0.72
 ############## Fiducial values ##################
+h=0.72						#
 omf =0.25					# Matter
 odef = 0.75					# Dark Energy
 orf = 8.2E-5					# Radiation
@@ -36,13 +36,13 @@ def Dx_matrix(z, om,ode,orr,ok,w):
 
 def Da(z,om,ode,orr,ok,w):
 	if ok == 0.0:
-		return Dx(z,om,ode,orr,ok,w)
+		return Dx_matrix(z,om,ode,orr,ok,w)
 	elif ok < 0.0:
 		K = H0*H0*np.abs(ok)
-		return np.power((K), -1./2)*np.sin(np.sqrt(K)*Dx(z,om,ode,orr,ok,w))
+		return np.power((K), -1./2)*np.sin(np.sqrt(K)*Dx_matrix(z,om,ode,orr,ok,w))
 	else:
 		K = H0*H0*np.abs(ok)
-		return np.power((K), -1./2)*np.sinh(np.sqrt(K)*Dx(z,om,ode,orr,ok,w))
+		return np.power((K), -1./2)*np.sinh(np.sqrt(K)*Dx_matrix(z,om,ode,orr,ok,w))
 
 def Dl(z,om,ode,orr,ok,w):
 	return Da(z,om,ode,orr,ok,w)*(1+z)
@@ -51,6 +51,8 @@ def Dl(z,om,ode,orr,ok,w):
 
 pl.figure()
 pl.plot(z1,Dx_matrix(z1,omf,odef,orf,okf,wf))
+pl.plot(z1,Da(z1,omf,odef,orf,okf,wf))
+pl.plot(z1,Dl(z1,omf,odef,orf,okf,wf))
 pl.show()
 
 
