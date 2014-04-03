@@ -8,14 +8,16 @@ import pylab as pl
 import scipy.integrate as inte
 
 h=0.72
-#	Fiducial values		#
+############## Fiducial values ##################
 omf =0.25					# Matter
 odef = 0.75					# Dark Energy
 orf = 8.2E-5					# Radiation
 wf = -1.					# Eq. of state
 okf = 1. - omf - odef - orf			# Curvature
-H0 = 1.023E-1*h					# Hubble in Gyrs
-
+c = 2.99E5					# c in km/s
+H0 = 100*h/c					# Hubble in Km/s/Mpc
+#################################################
+z1 = np.linspace(0.0,10.,1000)
 def H(z,om,ode,orr,ok,w):
 	aom = om*np.power((1+z), 3)
 	aok = ok*np.power((1+z), 2)
@@ -25,6 +27,12 @@ def H(z,om,ode,orr,ok,w):
 
 def Dx(z,om,ode,orr,ok,w):
 	return inte.quad(H,0,z,args=(om,ode,orr,ok,w))[0]
+def Dx_matrix(z, om,ode,orr,ok,w):
+	Dx_matrixl = np.zeros_like(z)
+	for i in range(len(z1)):
+		Dx_matrixl[i] = Dx(z[i],om,ode,orr,ok,w)
+	return Dx_matrixl
+
 
 def Da(z,om,ode,orr,ok,w):
 	if ok == 0.0:
@@ -38,9 +46,11 @@ def Da(z,om,ode,orr,ok,w):
 
 def Dl(z,om,ode,orr,ok,w):
 	return Da(z,om,ode,orr,ok,w)*(1+z)
-z1 = np.linspace(0.0,10.,1000)
+
+
+
 pl.figure()
-pl.plot(integral(z1,omf,odef,orf,okf,wf))
+pl.plot(z1,Dx_matrix(z1,omf,odef,orf,okf,wf))
 pl.show()
 
 
